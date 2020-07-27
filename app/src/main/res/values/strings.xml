@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Adhan</string>
+    <string name="title_main_activity">Adhan</string>
+    <string name="titlePrayerTimes">مواقيت الصلاة</string>
+    <string name="salatSob7">صلاة الفجْر</string>
+    <string name="salatDohr">صلاة الظُّهْر</string>
+    <string name="salat3asr" >صلاة العَصر</string>
+    <string name="salatMaghreb" >صلاة المَغرب</string>
+    <string name="salatAishaa" >صلاة العِشاء</string>
+    <string name="snooze">إيقاف</string>
+    <string name="title_notification"></string>
+    <string name="text_notification">حان الان موعد ادان </string>
+</resources>
