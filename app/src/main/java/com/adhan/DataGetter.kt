@@ -70,13 +70,19 @@ class DataGetter : Service() {
             val b = intent.getBundleExtra("Location")
             var lastKnownLoc = b.getParcelable<Parcelable>("Location") as Location?
             if (lastKnownLoc != null) {
-                Log.d("hada",lastKnownLoc.latitude.toString())
-                Log.d("hada",lastKnownLoc.longitude.toString())
-                var gcd: Geocoder = Geocoder(applicationContext, Locale("en"))
+                var gcd = Geocoder(applicationContext, Locale("ar"))
+
                 try {
                     var addresses: List<Address> =
                         gcd.getFromLocation(lastKnownLoc?.latitude!!, lastKnownLoc?.longitude!!, 1)
                     if (addresses.isNotEmpty()) {
+                        Log.d("hada",addresses[0].countryName)
+                        Log.d("hada",addresses[0].locality)
+                        val sharedPref = getSharedPreferences("location",Context.MODE_PRIVATE) ?: return
+                        with (sharedPref.edit()) {
+                            putString("baladiya", addresses[0].locality)
+                            commit()
+                        }
                         var city = addresses[0].locality.split(" ").toTypedArray()
                             .joinToString(separator = "%20")
                         Log.d("hada", city)
@@ -100,10 +106,12 @@ class DataGetter : Service() {
             that.add(json)
         }
 
+
         b.putStringArray("salawat",that.toTypedArray())
         return b
     }
     private fun startJob(){
+        stopJob()
         val componentName = ComponentName(this, NotificationService::class.java)
         val info = JobInfo.Builder(123,componentName)
             .setPersisted(true).setExtras(getBundle())
@@ -114,10 +122,11 @@ class DataGetter : Service() {
         } else {
             Log.d("scd","NOT")
         }
+        stopSelf()
     }
     fun stopJob(){
         val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        scheduler.cancel(123)
+        scheduler.cancelAll()
         Log.d("scd","Job cancelled")
     }
 
@@ -139,6 +148,8 @@ class DataGetter : Service() {
                     var gson = Gson()
                     var jsonObject = data.getJSONObject("timings")
                     var day = gson.fromJson(jsonObject.toString(), Day::class.java)
+                    Log.d("TIMING2",response)
+                    Log.d("TIMING2",day.isha)
                     CoroutineScope(Dispatchers.IO).launch {
                         databaseDao.updateTime("fajr",day.fajr!!)
                         databaseDao.updateTime("dhuhr",day.dhuhr!!)

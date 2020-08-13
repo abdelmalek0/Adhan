@@ -10,29 +10,53 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),MainInterface,HomeInterface {
     lateinit var mainFragment : Fragment
-    val MY_PERMISSIONS_REQUEST_LOCATION = 99
-    val MY_PERMISSIONS_REQUEST_COARSE = 100
+    private val MY_PERMISSIONS_REQUEST_LOCATION = 99
+    private val MY_PERMISSIONS_REQUEST_COARSE = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         init()
-        val i = Intent(this, DataGetter::class.java)
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startService(i)
         checkLocationPermission()
+        changeFragment()
+    }
+    private fun changeFragment(){
+        bottom_navigation.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.home -> {
+                    goToHomeFragment()
+                    true
+                }
+                R.id.audio -> {
+                    goToAudioFragment()
+                    true
+                }
+                R.id.map -> {
+                    goToMapFragment()
+                    true
+                }
+                R.id.settings -> {
+                    goToSettingsFragment()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
-    fun init(){
+    private fun init(){
         mainFragment = PrayerTimesFragment()
         supportFragmentManager.beginTransaction().add(R.id.mainFrame,mainFragment).commit()
     }
 
 
-    fun checkLocationPermission(): Boolean {
+    private fun checkLocationPermission(): Boolean {
         return if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -167,5 +191,33 @@ class MainActivity : AppCompatActivity() {
                 return
             }
         }
+    }
+
+    override fun goToAudioFragment() {
+        mainFragment = AudioFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
+
+    }
+
+    override fun goHomeButtonChecked(){
+        try {
+            bottom_navigation.selectedItemId = R.id.home
+        }catch (e:Exception){}
+    }
+    override fun goToHomeFragment() {
+        mainFragment = PrayerTimesFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
+    }
+
+    override fun goToSettingsFragment() {
+        mainFragment = PrayerTimesFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
+
+    }
+
+    override fun goToMapFragment() {
+        mainFragment = PrayerTimesFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
+
     }
 }

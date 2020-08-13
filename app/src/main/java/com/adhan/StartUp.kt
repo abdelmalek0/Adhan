@@ -9,9 +9,12 @@ class StartUp : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            val i = Intent(context, DataGetter::class.java)
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startService(i)
+            val  shared = context.getSharedPreferences("notification", Context.MODE_PRIVATE)
+            val bool = shared.getBoolean("notification",true)
+            if(bool){
+                val i = Intent(context, DataGetter::class.java)
+                context.startService(i)
+            }
         }
     }
 

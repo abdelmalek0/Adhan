@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">Adhan</string>
     <string name="title_main_activity">Adhan</string>
-    <string name="titlePrayerTimes">مواقيت الصلاة</string>
+    <string name="titlePrayerTimes">⏱ مواقيت الصلاة</string>
     <string name="salatSob7">صلاة الفجْر</string>
     <string name="salatDohr">صلاة الظُّهْر</string>
-    <string name="salat3asr" >صلاة العَصر</string>
-    <string name="salatMaghreb" >صلاة المَغرب</string>
-    <string name="salatAishaa" >صلاة العِشاء</string>
+    <string name="salat3asr">صلاة العَصر</string>
+    <string name="salatMaghreb">صلاة المَغرب</string>
+    <string name="salatAishaa">صلاة العِشاء</string>
     <string name="snooze">إيقاف</string>
     <string name="title_notification"></string>
-    <string name="text_notification">حان الان موعد ادان </string>
+    <string name="text_notification"> حان الان موعد ادان </string>
+    <string name="place">"أنت متواجد في بلدية : "</string>
+    <string name="notifications">تفعيل التنبيهات  :</string>
+    <string name="home">المواقيت</string>
+    <string name="audio">المؤذن</string>
+    <string name="map">الموقع</string>
+    <string name="settings">الأعدادات</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="choose">اختار</string>
 </resources>
