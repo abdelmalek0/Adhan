@@ -5,6 +5,32 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="materialCardViewStyle">@style/AppThemeCardView</item>
     </style>
 
+    <style name="GreenyTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#76be2f</item>
+        <item name="colorPrimaryDark">#289b23</item>
+        <item name="colorAccent">#f9a825</item>
+        <item name="materialCardViewStyle">@style/GreenyThemeCardView</item>
+    </style>
+
+    <style name="BrickTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#dd0d3c</item>
+        <item name="colorPrimaryDark">#c20029</item>
+        <item name="colorAccent">#f297a2</item>
+        <item name="materialCardViewStyle">@style/BrickThemeCardView</item>
+    </style>
+
+    <style name="BrickThemeCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#dd0d3c</item>
+    </style>
+    <style name="GreenyThemeCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#76be2f</item>
+    </style>
+    <style name="AppThemeCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorPrimary</item>
+    </style>
 </resources>

@@ -6,10 +6,12 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences.Editor
 import android.os.Bundle
+import android.util.LayoutDirection
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -17,11 +19,9 @@ import com.adhan.cache.AppDatabase
 import com.adhan.cache.PrayerDao
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_prayer_times.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 
@@ -37,29 +37,19 @@ class PrayerTimesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val lang = (activity as MainActivity).sharedPreferences.getString("language","Arabic")
+        if(lang == "Arabic"){
+            prayerBox.layoutDirection = View.LAYOUT_DIRECTION_LTR
+        }else{
+            prayerBox.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        }
         super.onViewCreated(view, savedInstanceState)
 
         val  shared = context!!.getSharedPreferences("notification", Context.MODE_PRIVATE)
         val bool = shared.getBoolean("notification",true)
         switch1.isChecked = bool
 
-        databaseDao = AppDatabase.getInstance(context!!).prayerDao()
-        CoroutineScope(IO).launch {
-            loadData()
-            withContext(Main){
-                salat1.text = listPrayerTimes[0]
-                salat2.text = listPrayerTimes[1]
-                salat3.text = listPrayerTimes[2]
-                salat4.text = listPrayerTimes[3]
-                salat5.text = listPrayerTimes[4]
-            }
-        }
-        /*val sharedPref = activity?.getSharedPreferences("location",Context.MODE_PRIVATE) ?: return
-        val locality = sharedPref.getString("baladiya", "___")
-        var snackbar = Snackbar.make(prayerTimesFragment, context!!.resources.getString(R.string.place)+locality, Snackbar.LENGTH_INDEFINITE)
-        ViewCompat.setLayoutDirection(snackbar.view,ViewCompat.LAYOUT_DIRECTION_RTL)
-        snackbar.show()
-        */
         switch1.setOnCheckedChangeListener { _, isChecked ->
             val editor: Editor = activity?.getSharedPreferences("notification", MODE_PRIVATE)!!.edit()
             if (isChecked) {
@@ -74,17 +64,26 @@ class PrayerTimesFragment : Fragment() {
             }
             editor.apply()
         }
+        Log.d("len","${listPrayerTimes.size}")
+        databaseDao = AppDatabase.getInstance(context!!).prayerDao()
+        runBlocking {
+            loadData()
+            salat1.text = listPrayerTimes[0]
+            salat2.text = listPrayerTimes[1]
+            salat3.text = listPrayerTimes[2]
+            salat4.text = listPrayerTimes[3]
+            salat5.text = listPrayerTimes[4]
+        }
+
     }
     private suspend fun loadData(){
         try {
-
+        listPrayerTimes.add(databaseDao.findByName("صلاة الفجْر"))
+        listPrayerTimes.add(databaseDao.findByName("صلاة الظُّهْر"))
+        listPrayerTimes.add(databaseDao.findByName("صلاة العَصر"))
+        listPrayerTimes.add(databaseDao.findByName("صلاة المَغرب"))
+        listPrayerTimes.add(databaseDao.findByName("صلاة العِشاء"))
         }catch (e:Exception){}
-        listPrayerTimes.add(databaseDao.findByName(context!!.resources.getString(R.string.salatSob7)))
-        listPrayerTimes.add(databaseDao.findByName(context!!.resources.getString(R.string.salatDohr)))
-        listPrayerTimes.add(databaseDao.findByName(context!!.resources.getString(R.string.salat3asr)))
-        listPrayerTimes.add(databaseDao.findByName(context!!.resources.getString(R.string.salatMaghreb)))
-        listPrayerTimes.add(databaseDao.findByName(context!!.resources.getString(R.string.salatAishaa)))
-
     }
 
 

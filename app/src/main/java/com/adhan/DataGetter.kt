@@ -22,11 +22,9 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -40,7 +38,7 @@ class DataGetter : Service() {
     var listPrayers : List<Prayer> = ArrayList<Prayer>()
 
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 
@@ -51,50 +49,70 @@ class DataGetter : Service() {
         val i = Intent(baseContext, GPSTracker::class.java)
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         baseContext.startService(i)
+        var iFilter = IntentFilter()
+        iFilter.addAction("GPSLocationUpdates")
+        iFilter.addAction("ManualLocationUpdates")
         LocalBroadcastManager.getInstance(baseContext).registerReceiver(
-            mMessageReceiver, IntentFilter("GPSLocationUpdates")
+            mMessageReceiver, iFilter
         )
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(IO).launch {
             listPrayers = databaseDao.getAll()
-            withContext(Main){
-                startJob()
+            withContext(Dispatchers.Default){
+                val componentName = ComponentName(baseContext, NotificationService::class.java)
+                val info = JobInfo.Builder(123,componentName)
+                    .setPersisted(true).setExtras(getBundle())
+                    .setPeriodic(15*60*1000).build()
+                val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                if(scheduler.schedule(info) == JobScheduler.RESULT_SUCCESS){
+                    Log.d("scd","Job scheduled")
+                } else {
+                    Log.d("scd","NOT")
+                }
             }
         }
 
     }
-
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            // Get extra data included in the Intent
-            val message = intent.getStringExtra("Status")
-            val b = intent.getBundleExtra("Location")
-            var lastKnownLoc = b.getParcelable<Parcelable>("Location") as Location?
-            if (lastKnownLoc != null) {
-                var gcd = Geocoder(applicationContext, Locale("ar"))
+            if(intent.action == "GPSLocationUpdates"){
 
-                try {
-                    var addresses: List<Address> =
-                        gcd.getFromLocation(lastKnownLoc?.latitude!!, lastKnownLoc?.longitude!!, 1)
-                    if (addresses.isNotEmpty()) {
-                        Log.d("hada",addresses[0].countryName)
-                        Log.d("hada",addresses[0].locality)
-                        val sharedPref = getSharedPreferences("location",Context.MODE_PRIVATE) ?: return
-                        with (sharedPref.edit()) {
-                            putString("baladiya", addresses[0].locality)
-                            commit()
+                // Get extra data included in the Intent
+                val message = intent.getStringExtra("Status")
+                val b = intent.getBundleExtra("Location")
+                var lastKnownLoc = b.getParcelable<Parcelable>("Location") as Location?
+                if (lastKnownLoc != null) {
+                    var gcd = Geocoder(applicationContext, Locale("ar"))
+
+                    try {
+                        var addresses: List<Address> =
+                            gcd.getFromLocation(lastKnownLoc?.latitude!!, lastKnownLoc?.longitude!!, 1)
+                        if (addresses.isNotEmpty()) {
+                            Log.d("hada",addresses[0].countryName)
+                            Log.d("hada",addresses[0].locality)
+                            val sharedPref = getSharedPreferences("location",Context.MODE_PRIVATE) ?: return
+                            with (sharedPref.edit()) {
+                                putString("baladiya", addresses[0].locality)
+                                commit()
+                            }
+                            var city = addresses[0].locality.split(" ").toTypedArray()
+                                .joinToString(separator = "%20")
+                            Log.d("hada", city)
+                            getDataByCity(city,addresses[0].countryName)
+
                         }
-                        var city = addresses[0].locality.split(" ").toTypedArray()
-                            .joinToString(separator = "%20")
-                        Log.d("hada", city)
-                        url =
-                            "http://api.aladhan.com/v1/timingsByCity?city=$city&country=Algeria&method=3"
-                        getData()
-
-                    }
-                }catch (e:Exception){}
+                    }catch (e:Exception){}
 
 
+                }
+
+            }else {
+
+                Log.d("tagging","ManualLocationUpdates")
+                val city = intent.getStringExtra("city")
+                val country = intent.getStringExtra("country")
+                getDataByCity(city,country)
             }
+
         }
     }
     private fun getBundle(): PersistableBundle{
@@ -110,20 +128,12 @@ class DataGetter : Service() {
         b.putStringArray("salawat",that.toTypedArray())
         return b
     }
-    private fun startJob(){
-        stopJob()
-        val componentName = ComponentName(this, NotificationService::class.java)
-        val info = JobInfo.Builder(123,componentName)
-            .setPersisted(true).setExtras(getBundle())
-            .setPeriodic(15*60*1000).build()
-        val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        if(scheduler.schedule(info) == JobScheduler.RESULT_SUCCESS){
-            Log.d("scd","Job scheduled")
-        } else {
-            Log.d("scd","NOT")
-        }
-        stopSelf()
+    fun getDataByCity(city:String,country:String){
+        url =
+            "http://api.aladhan.com/v1/timingsByCity?city=$city&country=$country&method=3"
+        getData()
     }
+
     fun stopJob(){
         val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         scheduler.cancelAll()
@@ -139,7 +149,7 @@ class DataGetter : Service() {
 
         val mJsonObjectRequest = StringRequest(
             Request.Method.GET, url,
-            Response.Listener { response ->
+            { response ->
 
                 try
                 {
@@ -150,7 +160,7 @@ class DataGetter : Service() {
                     var day = gson.fromJson(jsonObject.toString(), Day::class.java)
                     Log.d("TIMING2",response)
                     Log.d("TIMING2",day.isha)
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(IO).launch {
                         databaseDao.updateTime("fajr",day.fajr!!)
                         databaseDao.updateTime("dhuhr",day.dhuhr!!)
                         databaseDao.updateTime("asr",day.asr!!)
@@ -162,7 +172,7 @@ class DataGetter : Service() {
 
                 }
                 //it : JSON Object
-            }, Response.ErrorListener {
+            }, {
                 it.printStackTrace()
             })
 

@@ -32,8 +32,8 @@ class NotificationService : JobService() {
 
 
     override fun onStartJob(p0: JobParameters?): Boolean {
-        var liste = p0?.extras?.getStringArray("salawat")
-        var gson = Gson()
+        val liste = p0?.extras?.getStringArray("salawat")
+        val gson = Gson()
         if (liste != null) {
             for(i in liste){
                 listPrayers.add(gson.fromJson(i,Prayer::class.java))
@@ -63,7 +63,7 @@ class NotificationService : JobService() {
                         val builder = NotificationCompat.Builder(baseContext, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_app)
                             .setContentTitle(baseContext.resources.getString(R.string.title_notification)+element.name)
-                            .setContentText(baseContext.resources.getString(R.string.text_notification)+element.name)
+                            .setContentText(baseContext.resources.getString(R.string.text_notification)+" "+element.name)
                             .setSound(Uri.parse("android.resource://$packageName/$idAudio"))
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setContentIntent(pendingIntent)

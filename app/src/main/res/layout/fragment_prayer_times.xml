@@ -17,8 +17,6 @@
         android:switchMinWidth="56dp"
         android:layout_gravity="center"
         android:layout_marginVertical="30dp"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
         android:text="@string/notifications"
         android:checked="true"
         app:switchPadding="100dp"
@@ -30,6 +28,7 @@
         android:layout_height="match_parent"
         android:layout_marginHorizontal="40dp"
         android:layout_marginBottom="30dp"
+        android:id="@+id/prayerBox"
         app:cardCornerRadius="15dp"
         android:elevation="5dp"
         >
@@ -51,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:layout_weight="1">
 
                 </TextView>
@@ -72,19 +71,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <TextView
                         android:id="@+id/salat1"
                         android:gravity="center"
+                        android:textColor="@color/white"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent"></TextView>
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:text="@string/salatSob7"
                         android:gravity="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:layout_weight="1.5"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></TextView>
+                        android:layout_height="match_parent" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -96,19 +98,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <TextView
                         android:id="@+id/salat2"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent"></TextView>
+                        android:textColor="@color/white"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:text="@string/salatDohr"
                         android:gravity="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:layout_weight="1.5"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></TextView>
+                        android:layout_height="match_parent" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -120,19 +125,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <TextView
                         android:id="@+id/salat3"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent"></TextView>
+                        android:textColor="@color/white"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:text="@string/salat3asr"
                         android:gravity="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:layout_weight="1.5"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></TextView>
+                        android:layout_height="match_parent" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -144,19 +152,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <TextView
                         android:id="@+id/salat4"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent"></TextView>
+                        android:textColor="@color/white"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:text="@string/salatMaghreb"
                         android:gravity="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:layout_weight="1.5"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></TextView>
+                        android:layout_height="match_parent" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -168,19 +179,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <TextView
                         android:id="@+id/salat5"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent"></TextView>
+                        android:textColor="@color/white"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:text="@string/salatAishaa"
                         android:gravity="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:layout_weight="1.5"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></TextView>
+                        android:layout_height="match_parent" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

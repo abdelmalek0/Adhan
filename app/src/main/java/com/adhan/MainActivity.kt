@@ -2,29 +2,60 @@ package com.adhan
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
+import android.view.ContextThemeWrapper
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.adhan.language.BaseActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_prayer_times.*
 import java.lang.Exception
+import java.util.*
 
 
-class MainActivity : AppCompatActivity(),MainInterface,HomeInterface {
+class MainActivity : BaseActivity(),MainInterface,HomeInterface {
     lateinit var mainFragment : Fragment
     private val MY_PERMISSIONS_REQUEST_LOCATION = 99
     private val MY_PERMISSIONS_REQUEST_COARSE = 100
+    lateinit var sharedPreferences : SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferences = getSharedPreferences("Adhan", 0)
+        val theme = sharedPreferences.getInt("theme",0)
+        val lang = sharedPreferences.getString("language","Arabic")
+
+        when(theme) {
+            1 -> setTheme(R.style.GreenyTheme)
+            2 -> setTheme(R.style.BrickTheme)
+            else -> setTheme(R.style.AppTheme)
+        }
         setContentView(R.layout.activity_main)
+        if(lang == "Arabic"){
+            bottom_navigation.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        }else{
+            bottom_navigation.layoutDirection = View.LAYOUT_DIRECTION_LTR
+        }
         init()
         checkLocationPermission()
         changeFragment()
+        turnDataGetterOn()
+    }
+
+
+    override fun getTheme(): Resources.Theme {
+        return super.getTheme()
     }
     private fun changeFragment(){
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
@@ -207,17 +238,27 @@ class MainActivity : AppCompatActivity(),MainInterface,HomeInterface {
     override fun goToHomeFragment() {
         mainFragment = PrayerTimesFragment()
         supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
+        //goHomeButtonChecked()
     }
 
     override fun goToSettingsFragment() {
-        mainFragment = PrayerTimesFragment()
+        mainFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
 
     }
 
     override fun goToMapFragment() {
-        mainFragment = PrayerTimesFragment()
+        mainFragment = LocationFragment()
         supportFragmentManager.beginTransaction().replace(R.id.mainFrame,mainFragment).commit()
 
+    }
+
+    fun turnDataGetterOn(){
+        val  shared = getSharedPreferences("notification", Context.MODE_PRIVATE)
+        val bool = shared.getBoolean("notification",true)
+        if(bool){
+            val i = Intent(this, DataGetter::class.java)
+            startService(i)
+        }
     }
 }
