@@ -5,7 +5,7 @@ A mobile app to display the prayer times in respect to the location of the user 
 ### Homepage
 display Prayer times
 
-<img src="https://user-images.githubusercontent.com/68542177/101987677-f6013500-3c95-11eb-8e63-f7458bf26630.png"/>
+<img src="https://user-images.githubusercontent.com/68542177/103090833-8fafd700-45f2-11eb-8c21-39ecb4eea50e.png"/>
 
 ### Audio 
 change the sound for calling to prayer
@@ -20,9 +20,13 @@ Specify your location by either using GPS or writing down your city
 ### Settings
 change the language or change the theme and colors of the app
 
-<img src="https://user-images.githubusercontent.com/68542177/101987682-fa2d5280-3c95-11eb-853e-f73e59fe0382.png" />
+<img src="https://user-images.githubusercontent.com/68542177/103090876-a9e9b500-45f2-11eb-9e12-75cd146e14fc.png" />
 
 
  - English version
  
- <img src="https://user-images.githubusercontent.com/68542177/101987683-fac5e900-3c95-11eb-9ac5-7dae1faee952.png" />
+ <img src="https://user-images.githubusercontent.com/68542177/103090891-b3731d00-45f2-11eb-84d0-05e926e8708c.png" />
+ 
+ - The Brick theme ( RED )
+ 
+ <img src="https://user-images.githubusercontent.com/68542177/103090896-b53ce080-45f2-11eb-9151-93744d16fd80.png" />
