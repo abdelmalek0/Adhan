@@ -1,6 +1,6 @@
 # Adhan
 
-A mobile app to display the prayer times in respect to the location of the user and choose which sound you prefer to call for prayer .
+A mobile app that displays the prayer times in respect to the location of the user and it allows you to choose which sound you prefer to call for prayer .
 
 ### Homepage
 display Prayer times
